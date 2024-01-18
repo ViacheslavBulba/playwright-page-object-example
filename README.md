@@ -1,0 +1,1 @@
+Page Object pattern implementation example in JS + Playwright
