@@ -1,4 +1,4 @@
-import { getTextFromElements } from '../utils/WebElementsUtils';
+import { getTextFromElements } from '../utils/WebElementUtils';
 
 class SearchResultsPage {
 

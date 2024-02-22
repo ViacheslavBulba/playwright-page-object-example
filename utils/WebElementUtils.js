@@ -6,3 +6,9 @@ export async function getTextFromElements(page, locator) {
   }
   return texts;
 }
+
+async function getNumberOfElements(page, locator) {
+  const result = (await page.$$(locator)).length;
+  console.log(`found [${result}] elements for [${locator}]`);
+  return result;
+}
