@@ -20,8 +20,33 @@ export async function getNumberOfResultsInTheCounterOnTheTop(page) {
   return +resultsCountSummaryFullText.split(' ').slice(-2)[0]; // get 568 from string
 }
 
-test(`paging test example`, async ({ page }) => {
+test(`paging test example - simple`, async ({ page }) => {
+  const locatorBankNames = '//tr/td[1]';
+  await page.goto(`https://www.fdic.gov/resources/resolutions/bank-failures/failed-bank-list/index.html`);
+  const allBanksArray = [];
+  const tablePageSize = 12; // default is 12, but you can also add additional steps/tests for different page sizes
 
+  const totalEntriesInitial = await getNumberOfResultsInTheCounterOnTheTop(page); // 568
+  const expectedTotalPages = Math.ceil(totalEntriesInitial / tablePageSize); // 48 pages
+
+  const banksOnPage1 = await getTextFromElements(page, locatorBankNames);
+  allBanksArray.push(...banksOnPage1);
+
+  let nextPageCounter = 2;
+  while (await clickOnPageNumber(page, nextPageCounter)) {
+    // collect bank names
+    const banksOnOnePage = await getTextFromElements(page, locatorBankNames);
+    allBanksArray.push(...banksOnOnePage);
+    nextPageCounter++;
+  }
+  console.log(`check that amount of pages in the table paging = total entries / table page size`);
+  expect(nextPageCounter - 1).toBe(expectedTotalPages);
+
+  console.log(`check that amount of banks collected from all pages in table (${allBanksArray.length}) equals to total amount of entries shown above the table (${totalEntriesInitial})`);
+  expect(allBanksArray.length, `amount of all banks in table is not the same as in the counter on the top`).toBe(totalEntriesInitial);
+});
+
+test(`paging test example - extended`, async ({ page }) => {
   const locatorBankNames = '//tr/td[1]';
   await page.goto(`https://www.fdic.gov/resources/resolutions/bank-failures/failed-bank-list/index.html`);
   const tablePageSize = 12; // default is 12, but you can also add additional steps/tests for different page sizes
@@ -50,11 +75,10 @@ test(`paging test example`, async ({ page }) => {
     const topCounterInIteration = await getNumberOfResultsInTheCounterOnTheTop(page);
     expect(topCounterInIteration, 'total entries amount on the top should remain the same during pagination').toBe(totalEntriesInitial);
     // paging
-    if (!(await clickOnPageNumber(page, nextPageCounter))) {
-      break;
-    }
+    await clickOnPageNumber(page, nextPageCounter);
   }
-  expect(allBanksArray.length, `amount of all banks in table is not the same as counter on the top`).toBe(totalEntriesInitial);
+  expect(await clickOnPageNumber(page, expectedTotalPages + 1), `there should not be more than ${expectedTotalPages} pages in the table`).toBe(false);
+  expect(allBanksArray.length, `amount of all banks in table is not the same as in the counter on the top`).toBe(totalEntriesInitial);
   // expect(allBanksSet.size, `amount of unique banks in table is not the same as counter on the top`).toBe(totalEntriesInitial);
   allBanksArray.forEach(b => {
     expect(b !== '', 'there shoud not be banks with empty name in the table').toBe(true);
