@@ -39,11 +39,16 @@ test(`paging test example - simple`, async ({ page }) => {
     allBanksArray.push(...banksOnOnePage);
     nextPageCounter++;
   }
-  console.log(`check that amount of pages in the table paging = total entries / table page size`);
+  console.log(`verify that amount of pages in the table paging = total entries / table page size`);
   expect(nextPageCounter - 1).toBe(expectedTotalPages);
 
-  console.log(`check that amount of banks collected from all pages in table (${allBanksArray.length}) equals to total amount of entries shown above the table (${totalEntriesInitial})`);
+  console.log(`verify that amount of banks collected from all pages in table (${allBanksArray.length}) equals to the total amount of entries shown above the table (${totalEntriesInitial})`);
   expect(allBanksArray.length, `amount of all banks in table is not the same as in the counter on the top`).toBe(totalEntriesInitial);
+
+  console.log(`verify that there are no banks with empty name in the table`);
+  allBanksArray.forEach(b => {
+    expect(b !== '', 'there shoud not be banks with empty name in the table').toBe(true);
+  });
 });
 
 test(`paging test example - extended`, async ({ page }) => {
