@@ -39,6 +39,7 @@ test(`paging test example - simple`, async ({ page }) => {
     allBanksArray.push(...banksOnOnePage);
     nextPageCounter++;
   }
+
   console.log(`verify that amount of pages in the table paging = total entries / table page size`);
   expect(nextPageCounter - 1).toBe(expectedTotalPages);
 
