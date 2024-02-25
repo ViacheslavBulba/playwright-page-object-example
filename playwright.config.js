@@ -26,8 +26,8 @@ module.exports = defineConfig({
     // // viewport: null, // comment out
     // headless: true,
 
-    actionTimeout: 60 * 1000,
-    navigationTimeout: 180 * 1000,
+    actionTimeout: 10 * 1000,
+    navigationTimeout: 30 * 1000,
 
     screenshot: 'only-on-failure',
   },
