@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
-const { HomePage } = require('../pom/HomePage');
-const { SearchResultsPage } = require('../pom/SearchResultsPage');
+const { BestBuyHomePage } = require('../pom/BestBuyHomePage');
+const { BestBuySearchResultsPage } = require('../pom/BestBuySearchResultsPage');
 
 // test(`non page object example for comparison`, async ({page}) => {
 //   // define test parameters, input values
@@ -19,11 +19,11 @@ test('best buy search test - search by full exact name - playwright - page objec
   // define test parameters, input values
   const productToSearch = 'Apple - AirPods Pro (2nd generation) with MagSafe Case (USB‑C) - White';
   // test scenario steps below
-  const homePage = new HomePage(page);
-  await homePage.open();
-  await homePage.search(productToSearch);
-  const searchResultsPage = new SearchResultsPage(page);
-  const products = await searchResultsPage.getProductNames();
+  const bestBuyHomePage = new BestBuyHomePage(page);
+  await bestBuyHomePage.open();
+  await bestBuyHomePage.search(productToSearch);
+  const bestBuySearchResultsPage = new BestBuySearchResultsPage(page);
+  const products = await bestBuySearchResultsPage.getProductNames();
   console.log(`verify that the first product in results = [${productToSearch}]`);
   expect(products[0], `the first product in results is not [${productToSearch}]`).toBe(productToSearch);
 });

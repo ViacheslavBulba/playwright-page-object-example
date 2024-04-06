@@ -1,6 +1,6 @@
 import { getTextFromElements } from '../utils/WebElementUtils';
 
-class SearchResultsPage {
+class BestBuySearchResultsPage {
 
   constructor(page) {
     this.page = page;
@@ -19,4 +19,4 @@ class SearchResultsPage {
 
 }
 
-export { SearchResultsPage };
+export { BestBuySearchResultsPage };

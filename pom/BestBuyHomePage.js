@@ -1,4 +1,4 @@
-class HomePage {
+class BestBuyHomePage {
 
   constructor(page) {
     this.url = 'https://www.bestbuy.com/';
@@ -22,4 +22,4 @@ class HomePage {
 
 }
 
-export { HomePage };
+export { BestBuyHomePage };
