@@ -1,6 +1,26 @@
-const { test, expect } = require('@playwright/test');
-const { BestBuyHomePage } = require('../pom/BestBuyHomePage');
-const { BestBuySearchResultsPage } = require('../pom/BestBuySearchResultsPage');
+import { expect, test } from '@playwright/test';
+import { BestBuyHomePage } from '../pom/BestBuyHomePage';
+import { BestBuySearchResultsPage } from '../pom/BestBuySearchResultsPage';
+import { cleanupFolder, logsFolder, savePageSource } from '../utils/FileUtils';
+import { getDateAndTimeInString } from '../utils/StringUtils';
+
+test.afterEach(async ({ page }) => {
+  if (test.info().status === 'failed') {
+    const pageSource = await page.content();
+    const fileName = 'page_source_' + test.info().title.replace(/\s/g, '_') + '_' + getDateAndTimeInString() + '.html';
+    console.log('');
+    console.log(`writing failed page source to file - ${fileName}`);
+    console.log('');
+    savePageSource(fileName, pageSource);
+  }
+});
+
+test(`logs cleanup when running test set`, async () => {
+  // cannot be in beforeEach or beforeAll,
+  // those run not only once in parallel (once per each worker),
+  // so cleanup once from here as a separate test
+  cleanupFolder(logsFolder);
+});
 
 // test(`non page object example for comparison`, async ({page}) => {
 //   // define test parameters, input values
@@ -26,4 +46,11 @@ test('best buy search test - search by full exact name - playwright - page objec
   const products = await bestBuySearchResultsPage.getProductNames();
   console.log(`verify that the first product in results = [${productToSearch}]`);
   expect(products[0], `the first product in results is not [${productToSearch}]`).toBe(productToSearch);
+});
+
+test('failed test example', async ({ page }) => {
+  const bestBuyHomePage = new BestBuyHomePage(page);
+  await bestBuyHomePage.open();
+  console.log(`assert page title`);
+  expect(await page.title(), 'unexpected page title').toBe('Google');
 });
