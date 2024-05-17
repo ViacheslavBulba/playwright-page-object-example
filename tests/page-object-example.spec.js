@@ -16,17 +16,19 @@ test.afterEach(async ({ page }) => {
   if (test.info().status === 'failed') {
     const pageSource = await page.content();
     const fileName = 'page_source_' + test.info().title.replace(/\s/g, '_') + '_' + getDateAndTimeInString() + '.html';
-    console.log('');
     console.log(`writing failed page source to file - ${fileName}`);
-    console.log('');
     savePageSource(fileName, pageSource);
   }
   if (test.info().status === 'failed') {
     let csvFileName = 'console_errors_' + getDateAndTimeInString() + '_' + test.info().status + '_' + test.info().title + '.csv';
     csvFileName = `${csvFileName}`.replace(/(:|\/)/g, '_').replace(/,/g, '_').replace(/\s/g, '_');
-    console.log(`writing console errors to file - ${csvFileName}`);
-    console.log('');
-    writeConsoleErrorsToFile(pageConsoleErrors, pageJsErrors, csvFileName);
+    if (pageConsoleErrors.length > 0 || pageJsErrors.length > 0) {
+      console.log(`writing console errors to file - ${csvFileName}`);
+      writeConsoleErrorsToFile(pageConsoleErrors, pageJsErrors, csvFileName);
+    }
+  }
+  if (test.info().status === 'failed') {
+    console.log('URL at the moment of failure = ' + page.url());
   }
 });
 
