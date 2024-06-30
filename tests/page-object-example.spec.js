@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { BestBuyHomePage } from '../pom/BestBuyHomePage';
 import { BestBuySearchResultsPage } from '../pom/BestBuySearchResultsPage';
-import { cleanupFolder, consoleErrorsFolder, logsFolder } from '../utils/FileUtils';
+import { cleanupFolder, consoleErrorsFolder, logsFolder, savePageSource, writeConsoleErrorsToFile } from '../utils/FileUtils';
+import { getDateAndTimeInString } from '../utils/StringUtils';
 import { attachConsoleErrorsListeners } from '../utils/PageUtils';
 import { assertTextIsPresent } from '../utils/WebElementUtils';
 import { readDataFromExcelFile } from '../utils/readExcelSheetUtils';
@@ -14,20 +15,20 @@ test.beforeEach(async ({ page, context, request }) => {
 });
 
 test.afterEach(async ({ page }) => {
-  // if (test.info().status === 'failed') {
-  //   const pageSource = await page.content();
-  //   const fileName = 'page_source_' + test.info().title.replace(/\s/g, '_') + '_' + getDateAndTimeInString() + '.html';
-  //   console.log(`writing failed page source to file - ${fileName}`);
-  //   savePageSource(fileName, pageSource);
-  // }
-  // if (test.info().status === 'failed') {
-  //   let csvFileName = 'console_errors_' + getDateAndTimeInString() + '_' + test.info().status + '_' + test.info().title + '.csv';
-  //   csvFileName = `${csvFileName}`.replace(/(:|\/)/g, '_').replace(/,/g, '_').replace(/\s/g, '_');
-  //   if (pageConsoleErrors.length > 0 || pageJsErrors.length > 0) {
-  //     console.log(`writing console errors to file - ${csvFileName}`);
-  //     writeConsoleErrorsToFile(pageConsoleErrors, pageJsErrors, csvFileName);
-  //   }
-  // }
+  if (test.info().status === 'failed') {
+    const pageSource = await page.content();
+    const fileName = 'page_source_' + test.info().title.replace(/\s/g, '_') + '_' + getDateAndTimeInString() + '.html';
+    console.log(`writing failed page source to file - ${fileName}`);
+    savePageSource(fileName, pageSource);
+  }
+  if (test.info().status === 'failed') {
+    let csvFileName = 'console_errors_' + getDateAndTimeInString() + '_' + test.info().status + '_' + test.info().title + '.csv';
+    csvFileName = `${csvFileName}`.replace(/(:|\/)/g, '_').replace(/,/g, '_').replace(/\s/g, '_');
+    if (pageConsoleErrors.length > 0 || pageJsErrors.length > 0) {
+      console.log(`writing console errors to file - ${csvFileName}`);
+      writeConsoleErrorsToFile(pageConsoleErrors, pageJsErrors, csvFileName);
+    }
+  }
   if (test.info().status === 'failed') {
     console.log('URL at the moment of failure = ' + page.url());
   }
@@ -73,8 +74,6 @@ test('failed test example', async ({ page }) => {
   console.log(`assert page title`);
   expect(await page.title(), 'unexpected page title').toBe('Google');
 });
-
-// run in terminal "npm i xlsx" to add dependency (xlsx library/package)
 
 const ExcelDataProvider = readDataFromExcelFile('excel-data-provider.xlsx');
 
