@@ -1,5 +1,14 @@
 const { test, expect } = require('@playwright/test');
 
+test.beforeEach(async ({ page, context, request }) => {
+  process.playwrightPage = page;
+  process.playwrightContext = context;
+  process.playwrightRequest = request;
+  console.log();
+  console.log('Test started:', new Date().toLocaleString());
+  console.log();
+});
+
 test(`shadow dom example`, async ({ page }) => {
   const locatorAcceptCookies = '#onetrust-accept-btn-handler';
   const locatorMakeDropdown = 'select#input'; // shadow dom element

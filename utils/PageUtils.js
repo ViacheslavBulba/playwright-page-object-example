@@ -7,7 +7,8 @@ export function createErrorObject(level, page, text, details) {
   };
 }
 
-export function attachConsoleErrorsListeners(page, pageConsoleErrors, pageJsErrors) {
+export function attachConsoleErrorsListeners(pageConsoleErrors, pageJsErrors) {
+  const page = process.playwrightPage;
   page.on('console', async message => {
     if (message.type() === 'error' || message.text().toLowerCase().includes('failed') || message.text().toLowerCase().includes('error')) {
       const entry = createErrorObject('console', page.url(), message.text(), message.location().url);

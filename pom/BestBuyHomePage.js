@@ -1,7 +1,8 @@
 class BestBuyHomePage {
 
-  constructor(page) {
+  constructor() {
     this.url = 'https://www.bestbuy.com/';
+    const page = process.playwrightPage;
     this.page = page;
     this.headerSearchInput = this.page.locator('.search-input');
     this.headerSearchButton = this.page.locator('.header-search-button');

@@ -11,7 +11,16 @@ const pageConsoleErrors = [];
 const pageJsErrors = [];
 
 test.beforeEach(async ({ page, context, request }) => {
-  attachConsoleErrorsListeners(page, pageConsoleErrors, pageJsErrors);
+  process.playwrightPage = page;
+  process.playwrightContext = context;
+  process.playwrightRequest = request;
+  console.log();
+  console.log('Test started:', new Date().toLocaleString());
+  console.log();
+});
+
+test.beforeEach(async () => {
+  attachConsoleErrorsListeners(pageConsoleErrors, pageJsErrors);
 });
 
 test.afterEach(async ({ page }) => {
@@ -55,21 +64,21 @@ test(`logs cleanup when running test set - one time before all tests`, async () 
 //   expect(await page.locator(locatorProductLinks).first().textContent()).toBe(productToSearch);
 // });
 
-test('best buy search test - search by full exact name - playwright - page object', async ({ page }) => {
+test('best buy search test - search by full exact name - playwright - page object', async () => {
   // define test parameters, input values
   const productToSearch = 'Apple - AirPods Pro (2nd generation) with MagSafe Case (USB‑C) - White';
   // test scenario steps below
-  const bestBuyHomePage = new BestBuyHomePage(page);
+  const bestBuyHomePage = new BestBuyHomePage();
   await bestBuyHomePage.open();
   await bestBuyHomePage.search(productToSearch);
-  const bestBuySearchResultsPage = new BestBuySearchResultsPage(page);
+  const bestBuySearchResultsPage = new BestBuySearchResultsPage();
   const products = await bestBuySearchResultsPage.getProductNames();
   console.log(`verify that the first product in results = [${productToSearch}]`);
   expect(products[0], `the first product in results is not [${productToSearch}]`).toBe(productToSearch);
 });
 
 test('failed test example', async ({ page }) => {
-  const bestBuyHomePage = new BestBuyHomePage(page);
+  const bestBuyHomePage = new BestBuyHomePage();
   await bestBuyHomePage.open();
   console.log(`assert page title`);
   expect(await page.title(), 'unexpected page title').toBe('Google');
@@ -85,10 +94,10 @@ for (const lineFromExcel of ExcelDataProvider) {
   test(`best buy search test - read test data from excel - ${lineFromExcel.productToSearch} - ${lineFromExcel.amountOfResults}`, async ({ page }) => {
     const productToSearch = lineFromExcel.productToSearch;
     const amountOfResults = lineFromExcel.amountOfResults;
-    const bestBuyHomePage = new BestBuyHomePage(page);
+    const bestBuyHomePage = new BestBuyHomePage();
     await bestBuyHomePage.open();
     await bestBuyHomePage.search(productToSearch);
     await page.waitForTimeout(5000); // wait 5 seconds
-    await assertTextIsPresent(page, amountOfResults);
+    await assertTextIsPresent(amountOfResults);
   });
 }
