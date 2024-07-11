@@ -2,10 +2,8 @@ import { expect, test } from '@playwright/test';
 import { BestBuyHomePage } from '../pom/BestBuyHomePage';
 import { BestBuySearchResultsPage } from '../pom/BestBuySearchResultsPage';
 import { cleanupFolder, consoleErrorsFolder, logsFolder, savePageSource, writeConsoleErrorsToFile } from '../utils/FileUtils';
-import { getDateAndTimeInString } from '../utils/StringUtils';
 import { attachConsoleErrorsListeners } from '../utils/PageUtils';
-import { assertTextIsPresent } from '../utils/WebElementUtils';
-import { readDataFromExcelFile } from '../utils/readExcelSheetUtils';
+import { getDateAndTimeInString } from '../utils/StringUtils';
 
 const pageConsoleErrors = [];
 const pageJsErrors = [];
@@ -83,21 +81,3 @@ test('failed test example', async ({ page }) => {
   console.log(`assert page title`);
   expect(await page.title(), 'unexpected page title').toBe('Google');
 });
-
-const ExcelDataProvider = readDataFromExcelFile('excel-data-provider.xlsx');
-
-test.beforeAll(async () => {
-  console.log(ExcelDataProvider);
-})
-
-for (const lineFromExcel of ExcelDataProvider) {
-  test(`best buy search test - read test data from excel - ${lineFromExcel.productToSearch} - ${lineFromExcel.amountOfResults}`, async ({ page }) => {
-    const productToSearch = lineFromExcel.productToSearch;
-    const amountOfResults = lineFromExcel.amountOfResults;
-    const bestBuyHomePage = new BestBuyHomePage();
-    await bestBuyHomePage.open();
-    await bestBuyHomePage.search(productToSearch);
-    await page.waitForTimeout(5000); // wait 5 seconds
-    await assertTextIsPresent(amountOfResults);
-  });
-}
