@@ -2,8 +2,9 @@ import { expect, test } from '@playwright/test';
 import { BestBuyHomePage } from '../pom/BestBuyHomePage';
 import { BestBuySearchResultsPage } from '../pom/BestBuySearchResultsPage';
 import { cleanupFolder, consoleErrorsFolder, logsFolder, savePageSource, writeConsoleErrorsToFile } from '../utils/FileUtils';
-import { attachConsoleErrorsListeners } from '../utils/PageUtils';
+import { attachConsoleErrorsListeners, openUrl } from '../utils/PageUtils';
 import { getDateAndTimeInString } from '../utils/StringUtils';
+import { assertTextEqualsIsVisible, enterTextInElement, enterTextInElementAndPressEnter } from '../utils/WebElementUtils';
 
 const pageConsoleErrors = [];
 const pageJsErrors = [];
@@ -80,4 +81,10 @@ test('failed test example', async ({ page }) => {
   await bestBuyHomePage.open();
   console.log(`assert page title`);
   expect(await page.title(), 'unexpected page title').toBe('Google');
+});
+
+test('simple test example - google search example', async ({ page }) => {
+  await openUrl('https://www.google.com/');
+  await enterTextInElementAndPressEnter('[title="Search"]', 'maven');
+  await assertTextEqualsIsVisible('Maven – Welcome to Apache Maven');
 });
