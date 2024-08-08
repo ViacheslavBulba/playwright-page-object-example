@@ -5,6 +5,8 @@ export const logsFolder = 'logs';
 export const pageSourceFolder = logsFolder + path.sep + 'page_source';
 export const consoleErrorsFolder = logsFolder + path.sep + 'console_errors';
 
+export const logsFolderPath = logsFolder + path.sep;
+
 export function savePageSource(fileName, pageSource) {
   try {
     if (!fs.existsSync(logsFolder)) {
@@ -64,4 +66,20 @@ export function convertObjectToStringForCsvFile(obj) {
     str += `${text},`;
   }
   return str.slice(0, str.length - 1);
+}
+
+export function appendLogFile(fileName, line) {
+  try {
+    if (!fs.existsSync(logsFolder)) {
+      fs.mkdirSync(logsFolder);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+  fs.appendFileSync(logsFolder + path.sep + fileName, `${line}\n`, 'utf8');
+}
+
+export function logToConsoleAndOutputFile(message, fileName) {
+  console.log(message);
+  appendLogFile(fileName, message);
 }
