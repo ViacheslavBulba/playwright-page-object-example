@@ -1,4 +1,4 @@
-Page Object pattern implementation example in JS + Playwright
+Page Object pattern implementation and other examples in JS + Playwright
 
 Download and install https://nodejs.org/en/download
 

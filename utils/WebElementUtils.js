@@ -702,3 +702,17 @@ export async function isAnyElementFromFewPresent(locatorsArray) {
   }
   return false;
 }
+
+export async function getOuterHTMLFromElements(locator) {
+  const page = process.playwrightPage;
+  const elements = await page.locator(locator).all();
+  const values = [];
+  for (let el of elements) {
+    let attr = await el.evaluate((el) => el.outerHTML);
+    if (attr === null) {
+      attr = '';
+    }
+    values.push(attr);
+  }
+  return values;
+}

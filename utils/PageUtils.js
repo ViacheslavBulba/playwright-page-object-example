@@ -30,12 +30,9 @@ export async function scrollUp(pixels) {
 export async function scrollToBottom() {
   const page = process.playwrightPage;
   console.log('scroll to the bottom of the page');
-  await scrollDown(5000);
-  await page.waitForTimeout(1000);
-  await scrollDown(5000);
-  await page.waitForTimeout(1000);
-  await scrollDown(5000);
-  await page.waitForTimeout(1000);
+  for (let i = 0; i < 6; i++) {
+    await scrollDown(1000);
+  }
 }
 
 export async function waitSeconds(seconds) {
