@@ -5,15 +5,18 @@ class BestBuySearchResultsPage {
   constructor() {
     const page = process.playwrightPage;
     this.page = page;
-    this.locatorProductLinks = '.sku-title a';
+    this.locatorProductLinks = 'a.product-list-item-link';
+    this.locatorProductNames = '.product-title';
+    this.locatorProductImages = '.product-image';
     this.locatorResultsCountOnTheTop = '.item-count';
     this.productLinks = this.page.locator(this.locatorProductLinks);
+    this.productImages = this.page.locator(this.locatorProductImages);
     this.productPrices = this.page.locator('//*[contains(@class,"sku-item")]//*[@data-testid="customer-price"]/span[1]');
   }
 
   async getProductNames() {
-    await this.productLinks.first().waitFor({ state: 'visible' });
-    const results = await getTextFromElements(this.locatorProductLinks);
+    await this.page.waitForTimeout(5000);
+    const results = await getTextFromElements(this.locatorProductNames);
     console.log('found product names:');
     console.log(results);
     return results;

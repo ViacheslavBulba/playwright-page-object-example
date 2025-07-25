@@ -4,7 +4,7 @@ class BestBuyHomePage {
     this.url = 'https://www.bestbuy.com/';
     const page = process.playwrightPage;
     this.page = page;
-    this.headerSearchInput = this.page.locator('.search-input');
+    this.headerSearchInput = this.page.locator('.search-input, #autocomplete-search-bar');
     this.headerSearchButton = this.page.locator('.header-search-button');
     this.headerCartIcon = this.page.locator('.shop-cart-icon');
   }
@@ -12,6 +12,7 @@ class BestBuyHomePage {
   async open() {
     console.log(`open page ${this.url}`);
     await this.page.goto(this.url);
+    await this.page.waitForTimeout(5000);
   }
 
   async search(text) {

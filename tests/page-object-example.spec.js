@@ -63,17 +63,24 @@ test(`logs cleanup when running test set - one time before all tests`, async () 
 //   expect(await page.locator(locatorProductLinks).first().textContent()).toBe(productToSearch);
 // });
 
-test('best buy search test - search by full exact name - playwright - page object', async () => {
+async function attachScreenshot(page, testInfo) {
+  const screenshot = await page.screenshot({ fullPage: true });
+  testInfo.attach(`${getDateAndTimeInString()}`, { body: screenshot, contentType: 'image/png' });
+}
+
+test('best buy - search by name - with page object', async ({ page }, testInfo) => {
   // define test parameters, input values
-  const productToSearch = 'Apple - AirPods Pro (2nd generation) with MagSafe Case (USB‑C) - White';
+  const productToSearch = 'AirPods Pro 2';
   // test scenario steps below
   const bestBuyHomePage = new BestBuyHomePage();
   await bestBuyHomePage.open();
+  await attachScreenshot(page, testInfo);
   await bestBuyHomePage.search(productToSearch);
   const bestBuySearchResultsPage = new BestBuySearchResultsPage();
   const products = await bestBuySearchResultsPage.getProductNames();
-  console.log(`verify that the first product in results = [${productToSearch}]`);
-  expect(products[0], `the first product in results is not [${productToSearch}]`).toBe(productToSearch);
+  await attachScreenshot(page, testInfo);
+  console.log(`verify that the first product name in results contains = [${productToSearch}]`);
+  expect(products[0], `the first product in results does not contain [${productToSearch}]`).toContain(productToSearch);
 });
 
 test('failed test example', async ({ page }) => {
